@@ -51,8 +51,8 @@ const GraphQLErrorCode = {
           extra: {
             ssl: isProdAndStg ? { rejectUnauthorized: false } : null,
           },
-          connectTimeoutMS: 20000,
-          retryDelay: 8000,
+          //connectTimeoutMS: 20000,
+          retryDelay: 5000,
         };
       },
       inject: [ConfigService],
