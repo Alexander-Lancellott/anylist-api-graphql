@@ -1,0 +1,40 @@
+name: Deploy CI
+on:
+  pull_request:
+    types: [synchronize, opened]
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Yarn
+        run: yarn install
+      - name: Build
+        run: yarn build
+      - name: Deploy Staging to Vercel Action
+        uses: amondnet/vercel-action@v25
+        id: now-deployment-staging
+        if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required
+          github-token: ${{ secrets.GITHUB_TOKEN }} #Optional
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID}} #Required
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID}}
+          alias-domains: |
+            pr-{{PR_NUMBER}}-ala.alexander-lancellott.vercel.app
+      - name: Deploy Production to Vercel Action
+        uses: amondnet/vercel-action@v25
+        id: now-deployment-production
+        if: github.event_name == 'push'
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required
+          github-token: ${{ secrets.GITHUB_TOKEN }} #Optional
+          vercel-args: '--prod' #Optional
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID}} #Required
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID}}
+          alias-domains: |
+            anylist-api-avl.vercel.app

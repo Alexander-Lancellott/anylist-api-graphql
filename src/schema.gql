@@ -1,0 +1,158 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ListItem {
+  id: ID!
+  quantity: Float!
+  completed: Boolean!
+  list: List!
+  item: Item!
+}
+
+type List {
+  id: ID!
+  name: String!
+  user: User!
+  getListItems(page: Int = 1, limit: Int = 10, search: String): ListItemsPagination!
+}
+
+type User {
+  id: ID!
+  fullName: String!
+  email: String!
+  roles: [String!]!
+  isActive: Boolean!
+  lastUpdateBy: User
+  getItems(page: Int = 1, limit: Int = 10, search: String): ItemsPagination!
+  getLists(page: Int = 1, limit: Int = 10, search: String): ListsPagination!
+}
+
+type Item {
+  id: ID!
+  name: String!
+  quantityUnits: String
+  user: User!
+  listItem: [ListItem!]!
+}
+
+type ItemsPagination {
+  page: Int!
+  totalPages: Int!
+  totalItems: Int!
+  items: [Item!]!
+}
+
+type ListsPagination {
+  page: Int!
+  totalPages: Int!
+  totalLists: Int!
+  lists: [List!]!
+}
+
+type UsersPagination {
+  page: Int!
+  totalPages: Int!
+  totalUsers: Int!
+  users: [User!]!
+}
+
+type ListItemsPagination {
+  page: Int!
+  totalPages: Int!
+  totalListItems: Int!
+  listItems: [ListItem!]!
+}
+
+type AuthResponse {
+  token: String!
+  user: User!
+}
+
+type Query {
+  getItems(page: Int = 1, limit: Int = 10, search: String): ItemsPagination!
+  item(id: ID!): Item!
+  getUsers(roles: [ValidRoles!] = [], page: Int = 1, limit: Int = 10, search: String): UsersPagination!
+  user(id: ID!): User!
+  getLists(page: Int = 1, limit: Int = 10, search: String): ListsPagination!
+  list(id: String!): List!
+  listItem(id: String!): ListItem!
+  revalidate: AuthResponse!
+}
+
+enum ValidRoles {
+  admin
+  user
+  superUser
+}
+
+type Mutation {
+  createItem(createItemInput: CreateItemInput!): Item!
+  updateItem(updateItemInput: UpdateItemInput!): Item!
+  removeItem(id: ID!): Item!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  blockUser(id: ID!): User!
+  createList(createListInput: CreateListInput!): List!
+  updateList(updateListInput: UpdateListInput!): List!
+  removeList(id: String!): List!
+  createListItem(createListItemInput: CreateListItemInput!): ListItem!
+  updateListItem(updateListItemInput: UpdateListItemInput!): ListItem!
+  signup(signupInput: SignupInput!): AuthResponse!
+  login(loginInput: LoginInput!): AuthResponse!
+  executeSeed: Boolean!
+}
+
+input CreateItemInput {
+  name: String!
+  quantityUnits: String
+}
+
+input UpdateItemInput {
+  name: String
+  quantityUnits: String
+  id: ID!
+}
+
+input UpdateUserInput {
+  email: String
+  fullName: String
+  password: String
+  id: ID!
+  roles: [ValidRoles!]
+  isActive: Boolean
+}
+
+input CreateListInput {
+  name: String!
+}
+
+input UpdateListInput {
+  name: String
+  id: ID!
+}
+
+input CreateListItemInput {
+  quantity: Float!
+  completed: Boolean = false
+  listId: ID!
+  itemId: ID!
+}
+
+input UpdateListItemInput {
+  quantity: Float
+  completed: Boolean = false
+  listId: ID
+  itemId: ID
+  id: ID!
+}
+
+input SignupInput {
+  email: String!
+  fullName: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
