@@ -61,10 +61,16 @@ const GraphQLErrorCode = {
       driver: ApolloDriver,
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
+        const states = [State.Prod, State.Stg];
+        const isProdAndStg = states.includes(
+          configService.getOrThrow<State>('STATE'),
+        );
         return {
           //debug: false,
           playground: false,
-          autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+          autoSchemaFile: isProdAndStg
+            ? true
+            : join(process.cwd(), 'src/schema.gql'),
           introspection: configService.getOrThrow<boolean>(
             'GRAPHQL_INTROSPECTION',
           ), // Generally false for production
