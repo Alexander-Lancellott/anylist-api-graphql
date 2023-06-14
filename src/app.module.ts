@@ -52,7 +52,7 @@ const GraphQLErrorCode = {
             ssl: isProdAndStg ? { rejectUnauthorized: false } : null,
           },
           //connectTimeoutMS: 20000,
-          retryDelay: 5000,
+          //retryDelay: 5000,
         };
       },
       inject: [ConfigService],
@@ -69,11 +69,12 @@ const GraphQLErrorCode = {
           //debug: false,
           playground: false,
           autoSchemaFile: isProdAndStg
-            ? true
+            ? undefined
             : join(process.cwd(), 'src/schema.gql'),
           introspection: configService.getOrThrow<boolean>(
             'GRAPHQL_INTROSPECTION',
           ), // Generally false for production
+          typePaths: isProdAndStg ? ['./**/*.gql'] : undefined,
           plugins: [ApolloServerPluginLandingPageLocalDefault()],
           formatError: (error: any) => {
             console.log(error.extensions);
