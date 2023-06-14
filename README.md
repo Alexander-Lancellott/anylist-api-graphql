@@ -27,7 +27,11 @@
 # Demo
 
 ```
-https://anylist-api-avl.vercel.app
+https://anylist-api-avl.up.railway.app/graphql
+```
+
+```
+https://anylist-api-avl.vercel.app/graphql
 ```
 
 ## Clone
