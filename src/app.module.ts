@@ -23,39 +23,9 @@ const GraphQLErrorCode = {
 
 @Module({
   imports: [
-    ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'public'),
-      exclude: ['/graphql'],
-    }),
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: JoiValidationSchema,
-    }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => {
-        const states = [State.Prod, State.Stg];
-        const isProdAndStg = states.includes(
-          configService.getOrThrow<State>('STATE'),
-        );
-        return {
-          type: 'postgres',
-          host: configService.getOrThrow<string>('DB_HOST'),
-          port: configService.getOrThrow<number>('DB_PORT'),
-          database: configService.getOrThrow<string>('DB_NAME'),
-          username: configService.getOrThrow<string>('DB_USERNAME'),
-          password: configService.getOrThrow<string>('DB_PASSWORD'),
-          autoLoadEntities: true,
-          synchronize: configService.getOrThrow<boolean>('DB_SYNCHRONIZE'), // Generally false for production
-          ssl: isProdAndStg,
-          extra: {
-            ssl: isProdAndStg ? { rejectUnauthorized: false } : null,
-          },
-          //connectTimeoutMS: 20000,
-          //retryDelay: 5000,
-        };
-      },
-      inject: [ConfigService],
     }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
@@ -100,6 +70,36 @@ const GraphQLErrorCode = {
         };
       },
       inject: [ConfigService],
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const states = [State.Prod, State.Stg];
+        const isProdAndStg = states.includes(
+          configService.getOrThrow<State>('STATE'),
+        );
+        return {
+          type: 'postgres',
+          host: configService.getOrThrow<string>('DB_HOST'),
+          port: configService.getOrThrow<number>('DB_PORT'),
+          database: configService.getOrThrow<string>('DB_NAME'),
+          username: configService.getOrThrow<string>('DB_USERNAME'),
+          password: configService.getOrThrow<string>('DB_PASSWORD'),
+          autoLoadEntities: true,
+          synchronize: configService.getOrThrow<boolean>('DB_SYNCHRONIZE'), // Generally false for production
+          ssl: isProdAndStg,
+          extra: {
+            ssl: isProdAndStg ? { rejectUnauthorized: false } : null,
+          },
+          connectTimeoutMS: 10000,
+          retryDelay: 5000,
+        };
+      },
+      inject: [ConfigService],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'public'),
+      exclude: ['/graphql'],
     }),
     ItemsModule,
     UsersModule,
