@@ -21,55 +21,51 @@ const GraphQLErrorCode = {
   BAD_USER_INPUT: 400,
 };
 
+const states = [State.Prod, State.Stg];
+const isProdAndStg = states.includes(process.env.STATE as State);
+const isIntrospection = process.env.GRAPHQL_INTROSPECTION;
+
+console.log(isProdAndStg, isIntrospection);
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: JoiValidationSchema,
     }),
-    GraphQLModule.forRootAsync<ApolloDriverConfig>({
+    GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => {
-        const states = [State.Prod, State.Stg];
-        const isProdAndStg = states.includes(
-          configService.getOrThrow<State>('STATE'),
-        );
-        return {
-          //debug: false,
-          playground: true,
-          autoSchemaFile: isProdAndStg
-            ? undefined
-            : join(process.cwd(), 'src/schema.gql'),
-          introspection: configService.getOrThrow<boolean>(
-            'GRAPHQL_INTROSPECTION',
-          ), // Generally false for production
-          typePaths: isProdAndStg ? ['./**/*.gql'] : undefined,
-          //plugins: [ApolloServerPluginLandingPageLocalDefault()],
-          formatError: (error: any) => {
-            console.log(error.extensions);
-            const graphQLFormattedError = {
-              message:
-                error.extensions?.originalError?.message ||
-                error.extensions?.response?.message ||
-                error.message ||
-                'Internal Server Error',
-              statusCode:
-                GraphQLErrorCode[error.extensions?.code] ||
-                error.extensions?.originalError?.statusCode ||
-                error.extensions?.response?.statusCode ||
-                500,
-              error:
-                error.extensions?.originalError?.error ||
-                error.extensions?.response?.error ||
-                error.extensions?.code ||
-                error.name,
-            };
-            return graphQLFormattedError;
-          },
+      //debug: false,
+      playground: true,
+      autoSchemaFile: true //isProdAndStg
+        ? undefined
+        : join(process.cwd(), 'src/schema.gql'),
+      introspection: true, // Generally false for production
+      typePaths: true //isProdAndStg
+        ? ['./**/*.gql']
+        : undefined,
+      //plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      formatError: (error: any) => {
+        console.log(error.extensions);
+        const graphQLFormattedError = {
+          message:
+            error.extensions?.originalError?.message ||
+            error.extensions?.response?.message ||
+            error.message ||
+            'Internal Server Error',
+          statusCode:
+            GraphQLErrorCode[error.extensions?.code] ||
+            error.extensions?.originalError?.statusCode ||
+            error.extensions?.response?.statusCode ||
+            500,
+          error:
+            error.extensions?.originalError?.error ||
+            error.extensions?.response?.error ||
+            error.extensions?.code ||
+            error.name,
         };
+        return graphQLFormattedError;
       },
-      inject: [ConfigService],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
