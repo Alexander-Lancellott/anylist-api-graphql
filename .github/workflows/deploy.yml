@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Yarn
-        run: yarn install
+        run: yarn install --prod
       - name: Build
         run: yarn build
       - name: Deploy Staging to Vercel Action

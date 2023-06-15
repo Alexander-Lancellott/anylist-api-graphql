@@ -37,7 +37,7 @@ const GraphQLErrorCode = {
         );
         return {
           //debug: false,
-          playground: false,
+          playground: true,
           autoSchemaFile: isProdAndStg
             ? undefined
             : join(process.cwd(), 'src/schema.gql'),
@@ -45,7 +45,7 @@ const GraphQLErrorCode = {
             'GRAPHQL_INTROSPECTION',
           ), // Generally false for production
           typePaths: isProdAndStg ? ['./**/*.gql'] : undefined,
-          plugins: [ApolloServerPluginLandingPageLocalDefault()],
+          //plugins: [ApolloServerPluginLandingPageLocalDefault()],
           formatError: (error: any) => {
             console.log(error.extensions);
             const graphQLFormattedError = {
@@ -99,7 +99,7 @@ const GraphQLErrorCode = {
     }),
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'public'),
-      exclude: ['/graphql'],
+      //exclude: ['/graphql'],
     }),
     ItemsModule,
     UsersModule,
