@@ -24,8 +24,6 @@ WORKDIR /usr/src/app
 
 COPY package.json yarn.lock ./
 RUN yarn install --prod
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/src/schema.gql .
+COPY --from=builder /app .
 
 CMD [ "node","dist/main" ]
