@@ -10,9 +10,7 @@ const parseAppUrl = async (app: INestApplication) => {
 };
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    cors: true,
-  });
+  const app = await NestFactory.create(AppModule);
   const configService = app.get<ConfigService>(ConfigService);
   const logger = new Logger('Bootstrap');
   const port = configService.get<number>('PORT');
