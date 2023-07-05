@@ -46,6 +46,8 @@ $ npm i -g @nestjs/cli
 $ docker-compose up -d
 ```
 
+> **Warning**
+>
 > Copy the `.env.template` rename the copy to `.env` and edit or fill in the value of the variables defined in the `.env` if necessary.
 
 ## Launch API
@@ -56,7 +58,9 @@ $ yarn start:dev
 
 > Visit: `http://localhost:3000/graphql`
 
-> Execute the `executeSeed` mutation to populate the database with information.
+> **Note**
+>
+>Execute the `executeSeed` mutation to populate the database with information.
 
 ## VSCode extensions
 
