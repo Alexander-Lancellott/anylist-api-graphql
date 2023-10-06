@@ -30,10 +30,6 @@
 https://anylist-api-graphql-2.onrender.com/graphql
 ```
 
-```
-https://anylist-api-avl.vercel.app/graphql
-```
-
 ## Clone
 
 `$ git clone `
