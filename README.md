@@ -27,7 +27,7 @@
 # Demo
 
 ```
-https://anylist-api-avl.up.railway.app/graphql
+https://anylist-api-graphql-2.onrender.com/graphql
 ```
 
 ```
